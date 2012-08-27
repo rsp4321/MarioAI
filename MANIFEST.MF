@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Rsrc-Class-Path: ./ jdom.jar httpmime-4.0.1.jar apache-mime4j-0.6.jar 
+ parallelcolt-0.9.4.jar nathansorenson.jar jacop.jar incanter-core-1.2
+ .3-SNAPSHOT.jar httpclient-4.0.1.jar httpcore-4.0.1.jar jxinput.jar l
+ evelevolve.jar commons-codec-1.3.jar clojure-1.2.0-master-20100528.12
+ 0302-79.jar commons-logging-1.1.1.jar clojure-contrib-1.2.0-20100528.
+ 120551-119.jar
+Class-Path: .
+Rsrc-Main-Class: dk.itu.mario.engine.Play
+Main-Class: org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader
+Specification-Version: 1.0
+Implementation-Version: 1.0
+
