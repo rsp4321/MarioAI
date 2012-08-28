@@ -447,8 +447,8 @@ public class MartinMuellerLevel extends Level implements LevelInterface {
 			if (aux == null) {
 				switch (tipo) {
 				/*
-				 * Nos inimigos com asas, verificamos se há um bloco de chão. Se
-				 * houver, ele será instanciado no mapa :^D
+				 * Nos inimigos com asas, verificamos se há um bloco de chão.
+				 * Se houver, ele será instanciado no mapa :^D
 				 */
 
 				/*
@@ -461,7 +461,8 @@ public class MartinMuellerLevel extends Level implements LevelInterface {
 						if (add_gkoopas[0] != green_koopas[0]) {
 
 							/*
-							 * Verificando se o bloco não é uma parte de um cano
+							 * Verificando se o bloco não é uma parte de um
+							 * cano
 							 */
 							boolean cano = (getBlock(x, y) == Level.TUBE_SIDE_LEFT)
 									|| (getBlock(x, y) == Level.TUBE_SIDE_RIGHT)
@@ -665,12 +666,12 @@ public class MartinMuellerLevel extends Level implements LevelInterface {
 		zone = new Zone();
 		// zones.loadFromDir("src//dk//itu//mario//level//generator//martinmueller//zones//5//");
 		// zones.loadFromDir("src//dk//itu//mario//level//generator//martinmueller//zones//10//");
-		zones.loadFromDir("./zones/15/");
+		// zones.loadFromDir("./zones/15/");
 		// zones.loadFromDir("./zones/20/");
 		// zones.loadFromDir("./zones/25/");
 		// zones.loadFromDir("./zones/30/");
 
-		// zones.loadFromDir("./zones/rsp/");
+		zones.loadFromDir("./zones/rsp/");
 
 		random = new Random(seed);
 		this.width = width;
