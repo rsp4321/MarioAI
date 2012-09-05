@@ -31,9 +31,15 @@ public class MartinMuellerLevel extends Level implements LevelInterface {
 
 	private int difficulty;
 	private int type;
-	private int gaps;
+
 	private int turtles;
+
+	// Contador dos elementos do cenário
+	private int gaps;
+	private int tubes;
 	private int coins;
+	private int quests;
+	private int platforms;
 
 	// Contadores dos bichos
 	private int goombas[] = { 10, 10 };
@@ -447,8 +453,8 @@ public class MartinMuellerLevel extends Level implements LevelInterface {
 			if (aux == null) {
 				switch (tipo) {
 				/*
-				 * Nos inimigos com asas, verificamos se há um bloco de chão.
-				 * Se houver, ele será instanciado no mapa :^D
+				 * Nos inimigos com asas, verificamos se há um bloco de chão. Se
+				 * houver, ele será instanciado no mapa :^D
 				 */
 
 				/*
@@ -461,8 +467,7 @@ public class MartinMuellerLevel extends Level implements LevelInterface {
 						if (add_gkoopas[0] != green_koopas[0]) {
 
 							/*
-							 * Verificando se o bloco não é uma parte de um
-							 * cano
+							 * Verificando se o bloco não é uma parte de um cano
 							 */
 							boolean cano = (getBlock(x, y) == Level.TUBE_SIDE_LEFT)
 									|| (getBlock(x, y) == Level.TUBE_SIDE_RIGHT)
@@ -735,6 +740,13 @@ public class MartinMuellerLevel extends Level implements LevelInterface {
 				level = i;
 			}
 		}
+
+		// Coletando os elementos do cenário
+		this.gaps = lGap[level];
+		this.platforms = lPlat[level];
+		this.coins = lCoin[level];
+		this.tubes = lTubes[level];
+		this.quests = lQuest[level];
 
 		// Definindo a quantidade dos bichos
 		this.red_koopas = cont_rkoopas;
