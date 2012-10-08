@@ -25,10 +25,16 @@ public class MuellerLevelGenerator implements LevelGenerator {
 		int gkoopas[] = { 10, 10 };
 		int rkoopas[] = { 10, 10 };
 		int goombas[] = { 10, 10 };
+		int cont_plats = 5;
+		int cont_tubes = 5;
+		int cont_gaps = 5;
+		int cont_coins = 5;
+		int cont_quests = 5;
 
 		LevelInterface level = (LevelInterface) new MartinMuellerLevel(320, 15,
 				new Random().nextLong(), 1, 0, playerMetrics, rkoopas, gkoopas,
-				goombas, 0, 10);
+				goombas, 0, 10, cont_plats, cont_gaps, cont_tubes, cont_quests,
+				cont_coins);
 
 		LevelFactory.register("MuellerLevel", level);
 		return level;

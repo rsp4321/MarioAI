@@ -9,6 +9,14 @@ import dk.itu.mario.engine.sprites.SpriteTemplate;
 import dk.itu.mario.engine.sprites.Enemy;
 import dk.itu.mario.level.Level;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.*;
+
+//import java.io.FileNotFoundException;
+
 public class MartinMuellerLevel extends Level implements LevelInterface {
 
 	// class holding the zones
@@ -660,11 +668,22 @@ public class MartinMuellerLevel extends Level implements LevelInterface {
 	 *            Quantidade de Plantas
 	 * @param cont_spikis
 	 *            Quantidade de Spikis (porco-espinho)
+	 * @param cont_plats
+	 *            Quantidade de plataformas (montanhas)
+	 * @param cont_gaps
+	 *            Quantidade de buracos
+	 * @param cont_tubes
+	 *            Quantidade de tubos
+	 * @param cont_quests
+	 *            Quantidade de blocos
+	 * @param cont_coins
+	 *            Quantidade de moedas
 	 */
 	public MartinMuellerLevel(int width, int height, long seed, int difficulty,
 			int type, GamePlay playerMetrics, int cont_rkoopas[],
 			int cont_gkoopas[], int cont_goombas[], int cont_plants,
-			int cont_spikis) {
+			int cont_spikis, int cont_plats, int cont_gaps, int cont_tubes,
+			int cont_quests, int cont_coins) {
 		super(width, height);
 		this.playerM = playerMetrics;
 		zones = new Zones();
@@ -813,11 +832,49 @@ public class MartinMuellerLevel extends Level implements LevelInterface {
 			offset = buildZone(tmp, offset);
 		}
 
+		// save_map_info();
+
 		/*
 		 * Criando os inimigos
 		 */
 		addEnemies();
 
-		return;
+//		return;
 	}
+
+	/**
+	 * Função para salvar as informações da fase em um arquivo texto.
+	 * (~/mariolevels.txt)
+	 */
+	/*
+	 * public void save_map_info() {
+	 * 
+	 * // Descobrindo o sistema operacional ativo String os =
+	 * System.getProperty("os.name"); String dir;
+	 * 
+	 * if (os == "Windows") dir = "c:\\MarioLevels.txt"; else dir =
+	 * "/tmp/MarioLevels.txt";
+	 * 
+	 * String home = System.getProperty("user.home");
+	 * 
+	 * try (FileReader arq = new FileReader(home)) { // arq = new
+	 * FileReader(dir);
+	 * 
+	 * 
+	 * 
+	 * } catch (FileNotFoundException e) {
+	 * System.err.println("File not found!");
+	 * 
+	 * } catch (@SuppressWarnings("hiding") IOException e) {
+	 * System.err.println("Error when open file.\nMessage: " + e.getMessage() +
+	 * "\nCall stack trace:"); e.printStackTrace(); System.err.println();
+	 * 
+	 * }
+	 * 
+	 * catch (IOException e) { System.err.println("Captured error! Message: " +
+	 * e.getMessage()); }
+	 * 
+	 * }
+	 */
+
 }
