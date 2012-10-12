@@ -49,9 +49,13 @@ public interface PetLevelInterface extends LevelInterface {
 	 * @throws ExistingElementException
 	 *             Ela é disparada quando aparece um objeto no meio da área
 	 *             delimitada (um bloco, por exemplo).
+	 * 
+	 * @throws OverTubeException
+	 *             Ela é disparada quando há um tubo sob a área da plataforma.
 	 */
 	public void CreatePlatform(int offset[], int width, int height)
-			throws ExistingElementException, WithoutFloorException;
+			throws ExistingElementException, WithoutFloorException,
+			OverTubeException;
 
 	/**
 	 * Essa rotina criará um buraco no chão.
@@ -61,7 +65,7 @@ public interface PetLevelInterface extends LevelInterface {
 	 * 
 	 * @param width
 	 *            Largura do elemento.
-	 * @throws AnotherGapException 
+	 * @throws AnotherGapException
 	 */
 	public void CreateGap(int offset, int width) throws AnotherGapException;
 
@@ -78,12 +82,13 @@ public interface PetLevelInterface extends LevelInterface {
 	 * @throws ExistingElementException
 	 *             Ela é disparada quando aparece um objeto no meio da área
 	 *             delimitada (um bloco, por exemplo).
-	 *             
-	 * @throws OverTubeException 
-	 * 				Ela é disparada quando há um tubo sob a área delimitada.
+	 * 
+	 * @throws OverTubeException
+	 *             Ela é disparada quando há um tubo sob a área delimitada.
 	 */
 	public void CreateTube(int offset[], int height)
-			throws ExistingElementException, WithoutFloorException, OverTubeException;
+			throws ExistingElementException, WithoutFloorException,
+			OverTubeException;
 
 	/**
 	 * Rotina para criar um chão no cenário. Após criado um chão, podemos

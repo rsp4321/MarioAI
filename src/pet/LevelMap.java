@@ -18,18 +18,19 @@ import dk.itu.mario.level.Level;
 public class LevelMap extends Level implements PetLevelInterface {
 
 	// Contador dos elementos do cenário
-	private int gaps = 5;
-	private int tubes = 10;
-	private int coins = 50;
+	private int gaps[] = { 2, 2, 2 };
+	private int tubes[] = { 2, 2, 2 };
+	private int coins = 30;
 	private int quests = 10;
-	private int platforms = 10;
+	private int platforms = 5;
+	private int mountains = 0;
 
 	// Contadores dos bichos
-	private int goombas[] = { 5, 5 };
-	private int green_koopas[] = { 5, 5 };
-	private int red_koopas[] = { 5, 5 };
+	private int goombas[] = { 3, 3 };
+	private int green_koopas[] = { 3, 3 };
+	private int red_koopas[] = { 3, 3 };
 	private int plants = 0;
-	private int spikis = 5;
+	private int spikis = 3;
 
 	/**
 	 * Construtor básico do mapa.
@@ -67,18 +68,20 @@ public class LevelMap extends Level implements PetLevelInterface {
 		super.xExit = super.width - 8;
 		super.yExit = super.height - 1;
 
-		while (i != this.gaps) {
+		int i_gaps[] = { 0, 0, 0 };
 
-			int offset = n.nextInt(super.width - 10);
-			int width = n.nextInt(5);
+		for (i = 0; i < 3; i++) {
+			while (i_gaps[i] != this.gaps[i]) {
 
-			if (offset > 10) {
+				int offset = n.nextInt(super.width - 10);
+				// int width = n.nextInt(5);
+				int width = i + 3;
 
-				if (width >= 3) {
+				if (offset > 10) {
 
 					try {
 						this.CreateGap(offset, width);
-						i++;
+						i_gaps[i]++;
 
 					} catch (AnotherGapException e) {
 						System.err.print(e.getMessage());
@@ -88,23 +91,26 @@ public class LevelMap extends Level implements PetLevelInterface {
 		}
 
 		i = 0;
+		int i_tubes[] = { 0, 0, 0 };
 
-		while (i != this.tubes) {
+		for (i = 0; i < 3; i++) {
+			while (i_tubes[i] != this.tubes[i]) {
 
-			int offset[] = { n.nextInt(super.width - 10),
-					n.nextInt(super.height - 1) };
-			int height = n.nextInt(4);
+				int offset[] = { n.nextInt(super.width - 10),
+						n.nextInt(super.height - 1) };
+				int height = i + 2;
 
-			if (offset[0] > 8) {
-				try {
+				if (offset[0] > 8) {
+					try {
 
-					this.CreateTube(offset, height);
-					i++;
+						this.CreateTube(offset, height);
+						i_tubes[i]++;
 
-				} catch (WithoutFloorException | ExistingElementException
-						| OverTubeException e) {
+					} catch (WithoutFloorException | ExistingElementException
+							| OverTubeException e) {
 
-					System.err.println(e.getMessage());
+						System.err.println(e.getMessage());
+					}
 				}
 			}
 		}
@@ -116,19 +122,20 @@ public class LevelMap extends Level implements PetLevelInterface {
 			int offset[] = { n.nextInt(super.width - 10),
 					n.nextInt(super.height - 1) };
 
-			int height = n.nextInt(4);
+			int height = n.nextInt(5);
 			int width = n.nextInt(10);
 
 			if (offset[0] > 8) {
 
-				if (width > 1) {
-					
+				if ((width > 1) && (height > 0)) {
+
 					try {
 
 						this.CreatePlatform(offset, width, height);
 						i++;
 
-					} catch (WithoutFloorException | ExistingElementException e) {
+					} catch (WithoutFloorException | ExistingElementException
+							| OverTubeException e) {
 
 						System.err.println(e.getMessage());
 					}
@@ -138,16 +145,18 @@ public class LevelMap extends Level implements PetLevelInterface {
 
 		this.CreateBlockMap();
 		this.CreateCoinMap();
-		
+
 		this.addEnemies();
 	}
 
 	@Override
 	public void CreatePlatform(int[] offset, int width, int height)
-			throws ExistingElementException, WithoutFloorException {
+			throws ExistingElementException, WithoutFloorException,
+			OverTubeException {
 
 		this.SearchExistingElements(offset, width, height);
 		this.SearchGapsUnderElements(offset, width);
+		this.SearchTubesUnderElements(offset);
 
 		for (int y = offset[1]; y > offset[1] - height; y--) {
 			for (int x = offset[0]; x < offset[0] + width; x++) {
@@ -187,6 +196,11 @@ public class LevelMap extends Level implements PetLevelInterface {
 
 	@Override
 	public void CreateGap(int offset, int width) throws AnotherGapException {
+
+		/*
+		 * TODO: Fazer a verificação de buracos vizinhos para evitar bugs
+		 * gráficos (chamar a rotina SearchNeighboringGaps()).
+		 */
 
 		this.SearchAnotherGap(offset, width);
 
@@ -335,7 +349,7 @@ public class LevelMap extends Level implements PetLevelInterface {
 					|| (this.getBlock(offset[0], y) == Level.TUBE_TOP_LEFT)
 					|| (this.getBlock(offset[0], y) == Level.TUBE_TOP_RIGHT)
 					|| (this.getBlock(offset[0], y) == Level.ROCK)
-					|| (this.getBlock(offset[0], y) == Level.COIN)
+					// || (this.getBlock(offset[0], y) == Level.COIN)
 					|| (this.getBlock(offset[0], y) == Level.HILL_FILL)
 					|| (this.getBlock(offset[0], y) == Level.HILL_LEFT)
 					|| (this.getBlock(offset[0], y) == Level.HILL_RIGHT)
@@ -577,6 +591,15 @@ public class LevelMap extends Level implements PetLevelInterface {
 		}
 	}
 
+	/**
+	 * Rotina para verificar se não há um tubo debaixo da área a ser desenhada.
+	 * 
+	 * @param offset
+	 *            Posição {x,y} do canto inferior esquerdo do objeto.
+	 * 
+	 * @throws OverTubeException
+	 *             Ela é disparada quando há um tubo embaixo da área.
+	 */
 	private void SearchTubesUnderElements(int offset[])
 			throws OverTubeException {
 
@@ -585,6 +608,19 @@ public class LevelMap extends Level implements PetLevelInterface {
 			throw new OverTubeException(offset);
 	}
 
+	/**
+	 * Rotina para verificar se não há um buraco ocupando toda ou parte da área
+	 * reservada para um novo buraco.
+	 * 
+	 * @param offset
+	 *            Posição {x} do canto superior esquerdo do buraco.
+	 * 
+	 * @param width
+	 *            Largura do buraco.
+	 * 
+	 * @throws AnotherGapException
+	 *             Ela é disparado quando há um outro buraco ocupando a área.
+	 */
 	private void SearchAnotherGap(int offset, int width)
 			throws AnotherGapException {
 
@@ -592,8 +628,105 @@ public class LevelMap extends Level implements PetLevelInterface {
 
 			for (int x = offset; x < offset + width; x++) {
 
-				if (this.getBlock(x, y) == Level.LEFT_UP_GRASS_EDGE)
+				if ((this.getBlock(x, y) == Level.LEFT_UP_GRASS_EDGE)
+						|| (this.getBlock(x, y) == Level.RIGHT_UP_GRASS_EDGE)
+						|| (this.getBlock(x, y) == (byte) 0))
 					throw new AnotherGapException(offset);
+			}
+		}
+	}
+
+	/**
+	 * Rotina para verificar se há um buraco vizinho.
+	 * 
+	 * @param offset
+	 *            Posição {x} do canto esquerdo do buraco.
+	 * 
+	 * @param width
+	 *            Largura do buraco.
+	 * 
+	 * @return 0: Nenhum vizinho; 1: Um vizinho na direita; 2: Um vizinho na
+	 *         esquerda; 3: Dois vizinhos nos dois lados.
+	 */
+	private int SearchNeighboringGaps(int offset, int width) {
+		int res = 0;
+
+		for (int aux = offset - 1; aux != offset + width + 1; aux += width + 1) {
+			if (this.getBlock(aux, this.height - 1) == Level.RIGHT_UP_GRASS_EDGE)
+				res++;
+			else if (this.getBlock(aux, this.height - 1) == Level.LEFT_UP_GRASS_EDGE)
+				res += 2;
+		}
+
+		return res;
+	}
+
+	/**
+	 * Rotina para criar uma montanha (plataforma que o Mario não pode passar
+	 * por dentro).
+	 * 
+	 * @param offset
+	 *            Posição {x,y} do canto inferior esquerdo.
+	 * 
+	 * @param width
+	 *            Largura do objeto.
+	 * 
+	 * @param height
+	 *            Altura do objeto.
+	 * 
+	 * @throws WithoutFloorException
+	 *             Ela é disparada quando não há um chão para construí-la.
+	 * 
+	 * @throws OverTubeException
+	 *             Ela é disparada quando há um tubo em baixo da área
+	 *             delimitada.
+	 */
+	private void CreateMountain(int offset[], int width, int height)
+			throws WithoutFloorException, OverTubeException {
+
+		/*
+		 * TODO: Necessita ser feita a verificação de montanhas vizinhas e o
+		 * desenho nesse caso.
+		 */
+
+		for (int y = offset[1]; y > offset[1] - height; y--) {
+			for (int x = offset[0]; x < offset[0] + width; x++) {
+
+				// Plataforma superior
+				if (y == offset[1] - height + 1) {
+
+					// Canto superior esquerdo
+					if (x == offset[0])
+						this.setBlock(x, y, Level.LEFT_UP_GRASS_EDGE);
+
+					// Canto superior direito
+					else if (x == offset[0] + height)
+						this.setBlock(x, y, Level.RIGHT_UP_GRASS_EDGE);
+
+					// Meio
+					else
+						this.setBlock(x, y, Level.HILL_TOP);
+				}
+
+				// Plataforma inferior
+				else if (y == offset[1]) {
+
+					// Canto inferior esquerdo
+					if (x == offset[0])
+						this.setBlock(x, y, Level.LEFT_POCKET_GRASS);
+
+					// Canto inferior direito
+					else if (x == offset[0] + width)
+						this.setBlock(x, y, Level.RIGHT_POCKET_GRASS);
+
+					// Meio
+					else
+						this.setBlock(x, y, Level.HILL_FILL);
+				}
+
+				// Plataforma intermediária
+				else {
+				}
 			}
 		}
 	}
