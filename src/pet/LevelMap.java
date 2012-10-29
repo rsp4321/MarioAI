@@ -12,25 +12,45 @@ import dk.itu.mario.engine.sprites.Enemy;
 import dk.itu.mario.engine.sprites.SpriteTemplate;
 import dk.itu.mario.level.Level;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.*;
+
 /**
  * @author Rodrigo
  */
 public class LevelMap extends Level implements PetLevelInterface {
 
 	// Contador dos elementos do cenário
-	private int gaps[] = { 2, 2, 2 };
-	private int tubes[] = { 2, 2, 2 };
-	private int coins = 30;
-	private int quests = 10;
-	private int platforms = 5;
-	private int mountains = 0;
+	private int gaps[];
+	private int tubes[];
+	private int coins;
+	private int quests;
+	private int platforms;
+	private int mountains;
 
 	// Contadores dos bichos
-	private int goombas[] = { 3, 3 };
-	private int green_koopas[] = { 3, 3 };
-	private int red_koopas[] = { 3, 3 };
-	private int plants = 0;
-	private int spikis = 3;
+	private int goombas[];
+	private int green_koopas[];
+	private int red_koopas[];
+	private int plants;
+	private int spikis;
+
+	// Quantidades padrão
+	private static int default_gaps[] = { 0, 1, 0 };
+	private static int default_tubes[] = { 2, 2, 2 };
+	private static int default_coins = 30;
+	private static int default_quests = 10;
+	private static int default_platforms = 5;
+	private static int default_mountains = 0;
+
+	private static int default_goombas[] = { 3, 3 };
+	private static int default_green_koopas[] = { 3, 3 };
+	private static int default_red_koopas[] = { 3, 3 };
+	private static int default_plants = 0;
+	private static int default_spikis = 3;
 
 	/**
 	 * Construtor básico do mapa.
@@ -44,8 +64,32 @@ public class LevelMap extends Level implements PetLevelInterface {
 	public LevelMap(int width, int height) {
 		super(width, height);
 
+		this.LoadDefaultQuantities();
+
 		this.CreateMap();
 		// this.addEnemies();
+	}
+
+	/**
+	 * Rotina para construção do mapa a partir de um arquivo texto
+	 * pré-existente.
+	 * 
+	 * @param file
+	 *            Objeto Path descrevendo o diretório do arquivo.
+	 * 
+	 * @param width
+	 *            Largura do mapa.
+	 * 
+	 * @param height
+	 *            Altura do mapa.
+	 */
+	public LevelMap(Path file, int width, int height) {
+
+		super(width, height);
+
+		this.LoadFromFile(file);
+
+		this.CreateMap();
 	}
 
 	@Override
@@ -730,4 +774,119 @@ public class LevelMap extends Level implements PetLevelInterface {
 			}
 		}
 	}
+
+	/**
+	 * Rotina para salvar os metadados em um arquivo texto.
+	 * 
+	 * @param file
+	 *            Objeto Path descrevendo o diretório do arquivo.
+	 */
+	void SaveLevelOnFile(Path file) {
+
+		// Definindo a codificação do arquivo (padrão da máquina virtual
+		Charset cod = Charset.defaultCharset();
+
+		// Criando uma stream ligada ao arquivo
+		try (BufferedWriter stream = Files.newBufferedWriter(file, cod,
+				StandardOpenOption.CREATE, StandardOpenOption.WRITE,
+				StandardOpenOption.TRUNCATE_EXISTING)) {
+
+			// "Escrevendo" nessa stream
+			// stream.write('\n');
+
+			for (int i : this.gaps)
+				stream.write(i + '\n');
+
+			for (int i : this.tubes)
+				stream.write(i + '\n');
+
+			stream.write(this.platforms + '\n');
+			stream.write(this.mountains + '\n');
+			stream.write(this.coins + '\n');
+			stream.write(this.quests + '\n');
+
+			for (int i : this.red_koopas)
+				stream.write(i + '\n');
+
+			for (int i : this.green_koopas)
+				stream.write(i + '\n');
+
+			for (int i : this.goombas)
+				stream.write(i + '\n');
+
+			stream.write(this.spikis + '\n');
+			stream.write(this.plants + "\n");
+
+		} catch (IOException e) {
+
+			System.err.println(e.getMessage());
+		}
+	}
+
+	/**
+	 * Rotina para carregar os metadados a partir de um arquivo texto.
+	 * 
+	 * @param file
+	 *            Objeto Path descrevendo o diretório do arquivo.
+	 */
+	void LoadFromFile(Path file) {
+		Charset cod = Charset.defaultCharset();
+
+		try (BufferedReader stream = Files.newBufferedReader(file, cod)) {
+
+			// Fazendo a leitura propriamente dita
+			for (int i = 0; i < 3; i++)
+				this.gaps[i] = Integer.parseInt(stream.readLine());
+
+			for (int i = 0; i < 3; i++)
+				this.tubes[i] = Integer.parseInt(stream.readLine());
+
+			this.platforms = Integer.parseInt(stream.readLine());
+			this.mountains = Integer.parseInt(stream.readLine());
+			this.coins = Integer.parseInt(stream.readLine());
+			this.quests = Integer.parseInt(stream.readLine());
+
+			for (int i = 0; i < 2; i++)
+				this.red_koopas[i] = Integer.parseInt(stream.readLine());
+
+			for (int i = 0; i < 2; i++)
+				this.green_koopas[i] = Integer.parseInt(stream.readLine());
+
+			for (int i = 0; i < 2; i++)
+				this.goombas[i] = Integer.parseInt(stream.readLine());
+
+			this.spikis = Integer.parseInt(stream.readLine());
+			this.plants = Integer.parseInt(stream.readLine());
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.err
+					.println("An IOException was ocurred at the reading of the file. Default quantities loaded.");
+
+			this.LoadDefaultQuantities();
+			
+		} catch (NullPointerException e) {
+
+			System.err.println("The opened file has wrong format. Can't read the quantities. Default quantities loaded.");
+			this.LoadDefaultQuantities();
+		}
+	}
+
+	/**
+	 * Rotina para carregar as quantidades padrão dos elementos do cenário.
+	 */
+	void LoadDefaultQuantities() {
+		this.gaps = LevelMap.default_gaps;
+		this.tubes = LevelMap.default_tubes;
+		this.platforms = LevelMap.default_platforms;
+		this.mountains = LevelMap.default_mountains;
+		this.coins = LevelMap.default_coins;
+		this.quests = LevelMap.default_quests;
+
+		this.red_koopas = LevelMap.default_red_koopas;
+		this.green_koopas = LevelMap.default_green_koopas;
+		this.goombas = LevelMap.default_goombas;
+		this.plants = LevelMap.default_plants;
+		this.spikis = LevelMap.default_spikis;
+	}
+
 }
