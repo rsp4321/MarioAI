@@ -21,7 +21,7 @@ public class PlayCustomized {
 
 		        frame.setVisible(true);
 
-		        mario.start();   
+		        mario.start();
 	}	
 
 }

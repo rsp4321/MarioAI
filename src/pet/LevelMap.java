@@ -38,6 +38,9 @@ public class LevelMap extends Level implements PetLevelInterface {
 	private int plants;
 	private int spikis;
 
+	// Nota
+	private int result;
+
 	// Quantidades padrão
 	private static int default_gaps[] = { 0, 1, 0 };
 	private static int default_tubes[] = { 2, 2, 2 };
@@ -51,6 +54,15 @@ public class LevelMap extends Level implements PetLevelInterface {
 	private static int default_red_koopas[] = { 3, 3 };
 	private static int default_plants = 0;
 	private static int default_spikis = 3;
+
+	/**
+	 * Enumeração dos tipos de manipulação de arquivo.
+	 * 
+	 * @author rodrigo
+	 */
+	public static enum FileHandlingType {
+		LOAD, SAVE;
+	}
 
 	/**
 	 * Construtor básico do mapa.
@@ -82,14 +94,23 @@ public class LevelMap extends Level implements PetLevelInterface {
 	 * 
 	 * @param height
 	 *            Altura do mapa.
+	 * 
+	 * @param type
+	 *            Enumeração representando o tipo de manipulação do arquivo.
 	 */
-	public LevelMap(Path file, int width, int height) {
+	public LevelMap(Path file, int width, int height, FileHandlingType type) {
 
 		super(width, height);
 
-		this.LoadFromFile(file);
+		if (type == FileHandlingType.LOAD)
+			this.LoadFromFile(file);
+		else
+			this.LoadDefaultQuantities();
 
 		this.CreateMap();
+
+		if (type == FileHandlingType.SAVE)
+			this.SaveLevelOnFile(file);
 	}
 
 	@Override
@@ -795,27 +816,27 @@ public class LevelMap extends Level implements PetLevelInterface {
 			// stream.write('\n');
 
 			for (int i : this.gaps)
-				stream.write(i + '\n');
+				stream.write(Integer.toString(i) + '\n');
 
 			for (int i : this.tubes)
-				stream.write(i + '\n');
+				stream.write(Integer.toString(i) + '\n');
 
-			stream.write(this.platforms + '\n');
-			stream.write(this.mountains + '\n');
-			stream.write(this.coins + '\n');
-			stream.write(this.quests + '\n');
+			stream.write(Integer.toString(this.platforms) + '\n');
+			stream.write(Integer.toString(this.mountains) + '\n');
+			stream.write(Integer.toString(this.coins) + '\n');
+			stream.write(Integer.toString(this.quests) + '\n');
 
 			for (int i : this.red_koopas)
-				stream.write(i + '\n');
+				stream.write(Integer.toString(i) + '\n');
 
 			for (int i : this.green_koopas)
-				stream.write(i + '\n');
+				stream.write(Integer.toString(i) + '\n');
 
 			for (int i : this.goombas)
-				stream.write(i + '\n');
+				stream.write(Integer.toString(i) + '\n');
 
-			stream.write(this.spikis + '\n');
-			stream.write(this.plants + "\n");
+			stream.write(Integer.toString(this.spikis) + '\n');
+			stream.write(Integer.toString(this.plants) + '\n');
 
 		} catch (IOException e) {
 
@@ -863,10 +884,11 @@ public class LevelMap extends Level implements PetLevelInterface {
 					.println("An IOException was ocurred at the reading of the file. Default quantities loaded.");
 
 			this.LoadDefaultQuantities();
-			
+
 		} catch (NullPointerException e) {
 
-			System.err.println("The opened file has wrong format. Can't read the quantities. Default quantities loaded.");
+			System.err
+					.println("The opened file has wrong format. Can't read the quantities. Default quantities loaded.");
 			this.LoadDefaultQuantities();
 		}
 	}
