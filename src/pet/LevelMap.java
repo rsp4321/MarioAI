@@ -802,7 +802,7 @@ public class LevelMap extends Level implements PetLevelInterface {
 	 * @param file
 	 *            Objeto Path descrevendo o diretório do arquivo.
 	 */
-	void SaveLevelOnFile(Path file) {
+	private void SaveLevelOnFile(Path file) {
 
 		// Definindo a codificação do arquivo (padrão da máquina virtual
 		Charset cod = Charset.defaultCharset();
@@ -850,7 +850,7 @@ public class LevelMap extends Level implements PetLevelInterface {
 	 * @param file
 	 *            Objeto Path descrevendo o diretório do arquivo.
 	 */
-	void LoadFromFile(Path file) {
+	 private void LoadFromFile(Path file) {
 		Charset cod = Charset.defaultCharset();
 
 		try (BufferedReader stream = Files.newBufferedReader(file, cod)) {
@@ -896,7 +896,7 @@ public class LevelMap extends Level implements PetLevelInterface {
 	/**
 	 * Rotina para carregar as quantidades padrão dos elementos do cenário.
 	 */
-	void LoadDefaultQuantities() {
+	private void LoadDefaultQuantities() {
 		this.gaps = LevelMap.default_gaps;
 		this.tubes = LevelMap.default_tubes;
 		this.platforms = LevelMap.default_platforms;
@@ -914,7 +914,7 @@ public class LevelMap extends Level implements PetLevelInterface {
 	/**
 	 * Rotina para gerar uma quantidade aleatória de elementos do cenário.
 	 */
-	void LoadRandomQuantities()
+	private void LoadRandomQuantities()
 	{
 		Random random = new Random();
 		
