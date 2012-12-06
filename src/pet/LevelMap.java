@@ -105,7 +105,7 @@ public class LevelMap extends Level implements PetLevelInterface {
 		if (type == FileHandlingType.LOAD)
 			this.LoadFromFile(file);
 		else
-			this.LoadDefaultQuantities();
+			this.LoadRandomQuantities();
 
 		this.CreateMap();
 
@@ -909,6 +909,38 @@ public class LevelMap extends Level implements PetLevelInterface {
 		this.goombas = LevelMap.default_goombas;
 		this.plants = LevelMap.default_plants;
 		this.spikis = LevelMap.default_spikis;
+	}
+	
+	/**
+	 * Rotina para gerar uma quantidade aleatória de elementos do cenário.
+	 */
+	void LoadRandomQuantities()
+	{
+		Random random = new Random();
+		
+		for (int i : this.gaps)
+			i = random.nextInt(7) + 3;
+		
+		for (int i : this.tubes)
+			i = random.nextInt(10) + 4;
+		
+		this.platforms = random.nextInt(6) + 2;
+		this.mountains = 0;
+		this.coins = random.nextInt(100) + 20;
+		this.quests = random.nextInt(10) + 5;
+		
+		for (int i : this.red_koopas)
+			i = random.nextInt(10) + 5;
+		
+		for (int i : this.green_koopas)
+			i = random.nextInt(10) + 5;
+		
+		for (int i : this.goombas)
+			i = random.nextInt(10) + 5;
+		
+		this.spikis = random.nextInt(10) + 5;
+		this.plants = random.nextInt(this.tubes[0] + this.tubes[1] + this.tubes[2]);
+			
 	}
 
 }
