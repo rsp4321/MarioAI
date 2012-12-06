@@ -24,17 +24,17 @@ import java.nio.file.*;
 public class LevelMap extends Level implements PetLevelInterface {
 
 	// Contador dos elementos do cenário
-	private int gaps[];
-	private int tubes[];
+	private int gaps[] = new int[3];
+	private int tubes[] = new int[3];
 	private int coins;
 	private int quests;
 	private int platforms;
 	private int mountains;
 
 	// Contadores dos bichos
-	private int goombas[];
-	private int green_koopas[];
-	private int red_koopas[];
+	private int goombas[] = new int[2];
+	private int green_koopas[] = new int[2];
+	private int red_koopas[] = new int[2];
 	private int plants;
 	private int spikis;
 
@@ -918,27 +918,27 @@ public class LevelMap extends Level implements PetLevelInterface {
 	{
 		Random random = new Random();
 		
-		for (int i : this.gaps)
-			i = random.nextInt(7) + 3;
+		for (int i=0;i<3;i++)
+			this.gaps[i] = random.nextInt(2) + 1;
 		
-		for (int i : this.tubes)
-			i = random.nextInt(10) + 4;
+		for (int i=0;i<3;i++)
+			this.tubes[i] = random.nextInt(2) + 2;
 		
-		this.platforms = random.nextInt(6) + 2;
+		this.platforms = random.nextInt(3) + 2;
 		this.mountains = 0;
-		this.coins = random.nextInt(100) + 20;
+		this.coins = random.nextInt(50) + 20;
 		this.quests = random.nextInt(10) + 5;
 		
-		for (int i : this.red_koopas)
-			i = random.nextInt(10) + 5;
+		for (int i=0;i<2;i++)
+			this.red_koopas[i] = random.nextInt(3) + 2;
 		
-		for (int i : this.green_koopas)
-			i = random.nextInt(10) + 5;
+		for (int i=0;i<2;i++)
+			this.green_koopas[i] = random.nextInt(3) + 2;
 		
-		for (int i : this.goombas)
-			i = random.nextInt(10) + 5;
+		for (int i=0;i<2;i++)
+			this.goombas[i] = random.nextInt(3) + 2;
 		
-		this.spikis = random.nextInt(10) + 5;
+		this.spikis = random.nextInt(5) + 2;
 		this.plants = random.nextInt(this.tubes[0] + this.tubes[1] + this.tubes[2]);
 			
 	}
